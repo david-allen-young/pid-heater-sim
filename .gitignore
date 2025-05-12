@@ -1,45 +1,45 @@
-# Build directories
+# Build output folders
 /build/
+/out/
 /cmake-build-*/
+
+# Visual Studio project files
+*.sln
+*.vcxproj*
+*.vcxproj.filters
+*.vcxproj.user
+*.user
+*.suo
+*.opensdf
+*.sdf
+*.cache
+*.pdb
+
+# Visual Studio Code / JetBrains
+.vscode/
+.idea/
+
+# Visual Studio metadata
+.vs/
 
 # CMake generated files
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 Makefile
+compile_commands.json
 
-# Visual Studio
-*.sln
-*.vcxproj*
-*.user
-*.opensdf
-*.vcxproj.filters
-
-# macOS
-.DS_Store
-
-# Unix-style hidden files
-*.swp
-*.swo
-
-# Executables and binaries
-*.out
+# Binaries and libs
 *.exe
+*.out
 *.dll
 *.so
 *.dylib
+*.a
 
-# Logs and temporary files
-*.log
+# OS / Editor junk
+.DS_Store
+*.swp
+*.swo
 *.tmp
 *.bak
-
-# Compilation database (optional, for clang tooling)
-compile_commands.json
-
-# VS Code settings (if using)
-.vscode/
-
-# Qt Creator / CLion / JetBrains
-.idea/
-*.pro.user
