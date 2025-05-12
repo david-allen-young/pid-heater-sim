@@ -1,12 +1,45 @@
-CMakeLists.txt.user
+# Build directories
+/build/
+/cmake-build-*/
+
+# CMake generated files
 CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
-Makefile
+CMakeFiles/
 cmake_install.cmake
-install_manifest.txt
+Makefile
+
+# Visual Studio
+*.sln
+*.vcxproj*
+*.user
+*.opensdf
+*.vcxproj.filters
+
+# macOS
+.DS_Store
+
+# Unix-style hidden files
+*.swp
+*.swo
+
+# Executables and binaries
+*.out
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# Compilation database (optional, for clang tooling)
 compile_commands.json
-CTestTestfile.cmake
-_deps
-CMakeUserPresets.json
+
+# VS Code settings (if using)
+.vscode/
+
+# Qt Creator / CLion / JetBrains
+.idea/
+*.pro.user
