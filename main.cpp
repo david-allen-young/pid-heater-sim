@@ -48,7 +48,6 @@ int main(int argc, char* argv[])
 
     PID pid(p, i, d);
     double global_temp = 20.0;
-    const double passive_cooling = 0.05;
     bool running = true;
     std::mutex mtx;
 
@@ -80,6 +79,9 @@ int main(int argc, char* argv[])
         {
             std::lock_guard<std::mutex> lock(mtx);
             global_temp += appliedHeat * 0.5;
+            const double ambient_temp = 20.0;
+            double temp_diff = global_temp - ambient_temp;
+            double passive_cooling = 0.01 + temp_diff * 0.001;
             global_temp -= passive_cooling;
         }
         auto elapsed = std::chrono::steady_clock::now().time_since_epoch();
