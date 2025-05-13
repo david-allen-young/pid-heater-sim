@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <chrono>
 #include <thread>
@@ -90,6 +91,7 @@ int main(int argc, char* argv[])
         int terminalLineWidth = 100;
         int paddingForReadout = 20;
         barLength = std::min(barLength, terminalLineWidth - paddingForReadout);
+        std::cout << std::fixed << std::setw(6) << std::setprecision(2);
         std::cout << "Temp: " << std::string(barLength, '=') << "> " << global_temp << " [" << ms.count() << " ms]" << std::endl;
         int heatBar = static_cast<int>(appliedHeat * 100);
         heatBar = std::min(heatBar, terminalLineWidth - paddingForReadout);
