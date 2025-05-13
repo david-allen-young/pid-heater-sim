@@ -86,8 +86,10 @@ int main(int argc, char* argv[])
         }
         auto elapsed = std::chrono::steady_clock::now().time_since_epoch();
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
-        int barLength = static_cast<int>(global_temp);
-        barLength = std::min(barLength, 100); // cap for terminal sanity
+        int barLength = static_cast<int>((global_temp / setpoint) * 100.0);
+        int terminalLineWidth = 100;
+        int paddingForReadout = 20;
+        barLength = std::min(barLength, terminalLineWidth - paddingForReadout);
         std::cout << "Temp: " << std::string(barLength, '=') << "> " << global_temp << " [" << ms.count() << " ms]" << std::endl;
         int heatBar = static_cast<int>(appliedHeat * 100);
         std::cout << "Heat: " << std::string(heatBar, '-') << "> " << appliedHeat << " [" << ms.count() << " ms]" << std::endl;
