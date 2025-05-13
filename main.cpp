@@ -55,12 +55,18 @@ int main(int argc, char* argv[])
     // Random generator setup
     std::default_random_engine rng(std::random_device{}());
     std::uniform_real_distribution<double> noise_dist(-0.05, 0.05);
+    
+    // LPF (low pass filter) setup
+    double alpha = 0.2;  // smoothing factor (0 = max smoothing, 1 = no smoothing)
+    double filtered_temp = global_temp;
 
     auto readSensors = [&]()
     {
         std::lock_guard<std::mutex> lock(mtx);
         double noise = noise_dist(rng);
-        return global_temp + noise;
+        double raw = global_temp + noise;
+        filtered_temp = (alpha * raw) + ((1.0 - alpha) * filtered_temp);
+        return filtered_temp;
     };
 
     auto computeControlAction = [&](double actual, double delta_time)
