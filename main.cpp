@@ -99,26 +99,19 @@ int main(int argc, char* argv[])
         std::cout << std::endl;
     };
 
-    auto waitUntilNextCycle = [](std::chrono::steady_clock::time_point now)
-    {
-        auto then = now + std::chrono::microseconds(10);
-        std::this_thread::sleep_until(then);
-    };
-
     std::condition_variable cv;
     std::mutex tick_mtx;
     bool tick_ready = false;
 
     std::thread timer([&]()
     {
-        using namespace std::chrono;
         while (running) {
             {
                 std::lock_guard<std::mutex> lock(tick_mtx);
                 tick_ready = true;
             }
             cv.notify_one();
-            std::this_thread::sleep_for(microseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
     });
 
