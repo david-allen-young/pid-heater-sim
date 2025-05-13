@@ -102,25 +102,67 @@ int main(int argc, char* argv[])
         std::this_thread::sleep_until(then);
     };
 
-    auto prev = std::chrono::steady_clock::now();
-    std::thread T1([&]()
+    //auto prev = std::chrono::steady_clock::now();
+    //std::thread T1([&]()
+    //{
+    //    while (running)
+    //    {
+    //        auto local_temp = readSensors();
+    //        auto now = std::chrono::steady_clock::now();
+    //        std::chrono::duration<double> elapsed = now - prev;
+    //        prev = now;
+    //        double delta_time = elapsed.count();
+    //        auto heat = computeControlAction(local_temp, delta_time);
+    //        sendActuatorCommands(heat);
+    //        waitUntilNextCycle(now);
+    //    }
+    //});
+
+    std::condition_variable cv;
+    std::mutex tick_mtx;
+    bool tick_ready = false;
+
+    std::thread timer([&]()
     {
+        using namespace std::chrono;
+        while (running) {
+            {
+                std::lock_guard<std::mutex> lock(tick_mtx);
+                tick_ready = true;
+            }
+            cv.notify_one();
+            std::this_thread::sleep_for(microseconds(10));
+        }
+    });
+
+    std::thread controller([&]()
+    {
+        auto prev = std::chrono::steady_clock::now();
+
         while (running)
         {
+            std::unique_lock<std::mutex> lock(tick_mtx);
+            cv.wait(lock, [&] { return tick_ready; });
+            tick_ready = false;
+            lock.unlock();
+
             auto local_temp = readSensors();
             auto now = std::chrono::steady_clock::now();
             std::chrono::duration<double> elapsed = now - prev;
             prev = now;
             double delta_time = elapsed.count();
+
             auto heat = computeControlAction(local_temp, delta_time);
             sendActuatorCommands(heat);
-            waitUntilNextCycle(now);
         }
-    });
+     });
+
 
     std::this_thread::sleep_for(std::chrono::seconds(duration_sec));
     running = false;
-    T1.join();
+    //T1.join();
+    timer.join();
+    controller.join();
 
     std::cout << std::endl << "Simulation complete." << std::endl;
     return 0;
