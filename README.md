@@ -4,13 +4,15 @@ A real-time simulation of a PID-controlled heating system written in C++14.
 
 ## 🎯 What It Does
 
-This project simulates a basic thermal system:
-- Temperature starts at 20°C
-- The system attempts to reach and maintain a target setpoint (default: 75°C)
-- PID feedback determines how much "heat" to apply each cycle
-- Passive cooling is applied every step
+This project simulates a basic thermal system using:
+- A **PID feedback controller** to regulate temperature toward a setpoint
+- **Real-time logic** with timer-driven execution using threads and condition variables
+- **Simulated sensor noise** to reflect real-world uncertainty
+- A **low-pass filter (LPF)** to smooth noisy sensor input
+- **Variable cooling** based on deviation from ambient temperature
+- A **live ASCII bar graph** to visualize temperature and heat output in real time
 
-The simulation runs in real-time using a background thread and logs temperature and control output at each cycle.
+Temperature starts at 20°C and rises toward the user-defined setpoint (default: 75°C) with heat applied each cycle according to PID output and offset by passive cooling.
 
 ---
 
@@ -19,7 +21,7 @@ The simulation runs in real-time using a background thread and logs temperature 
 ### Prerequisites
 
 - CMake 3.10+
-- A C++14-compatible compiler (g++, clang++, MSVC)
+- A C++14-compatible compiler (e.g., g++, clang++, or MSVC)
 
 ### Build Steps
 
@@ -56,19 +58,30 @@ make
 ## 📈 Sample Output
 
 ```
-[100234567 ms] Temp: 21.5 | Heat: 0.75
-[100234577 ms] Temp: 22.4 | Heat: 0.82
-...
+Temp: ================================================================================> 69.24 [488962243 ms]
+Heat: -----------------------------------------> 0.42 [488962243 ms]
 ```
 
 ---
 
 ## 🧠 Learning Highlights
 
-- Real-time control loop logic
-- PID feedback control theory
-- Threading and synchronization
-- Command-line argument parsing
+This project is ideal for studying:
+
+- PID control loop design and tuning
+- The effect of noisy inputs and sensor filtering
+- Real-time programming with threads and condition variables
+- Timer-driven simulation architecture
+- Console-based data visualization
+
+---
+
+## 🔄 Future Enhancements (Ideas)
+
+- Overheat protection / safety lockout logic
+- Dual-zone PID control simulation
+- Ramping setpoints and step disturbances
+- CSV logging for analysis in Python or Excel
 
 ---
 
