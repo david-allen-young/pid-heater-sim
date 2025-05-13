@@ -147,6 +147,12 @@ int main(int argc, char* argv[])
 
     std::this_thread::sleep_for(std::chrono::seconds(duration_sec));
     running = false;
+    {
+        std::lock_guard<std::mutex> lock(tick_mtx);
+        tick_ready = true;  // ensure predicate passes
+    }
+    cv.notify_one();
+
     timer.join();
     controller.join();
 
