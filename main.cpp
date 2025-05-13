@@ -92,6 +92,7 @@ int main(int argc, char* argv[])
         barLength = std::min(barLength, terminalLineWidth - paddingForReadout);
         std::cout << "Temp: " << std::string(barLength, '=') << "> " << global_temp << " [" << ms.count() << " ms]" << std::endl;
         int heatBar = static_cast<int>(appliedHeat * 100);
+        heatBar = std::min(heatBar, terminalLineWidth - paddingForReadout);
         std::cout << "Heat: " << std::string(heatBar, '-') << "> " << appliedHeat << " [" << ms.count() << " ms]" << std::endl;
         std::cout << std::endl;
     };
