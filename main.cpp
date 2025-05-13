@@ -103,22 +103,6 @@ int main(int argc, char* argv[])
         std::this_thread::sleep_until(then);
     };
 
-    //auto prev = std::chrono::steady_clock::now();
-    //std::thread T1([&]()
-    //{
-    //    while (running)
-    //    {
-    //        auto local_temp = readSensors();
-    //        auto now = std::chrono::steady_clock::now();
-    //        std::chrono::duration<double> elapsed = now - prev;
-    //        prev = now;
-    //        double delta_time = elapsed.count();
-    //        auto heat = computeControlAction(local_temp, delta_time);
-    //        sendActuatorCommands(heat);
-    //        waitUntilNextCycle(now);
-    //    }
-    //});
-
     std::condition_variable cv;
     std::mutex tick_mtx;
     bool tick_ready = false;
@@ -161,7 +145,6 @@ int main(int argc, char* argv[])
 
     std::this_thread::sleep_for(std::chrono::seconds(duration_sec));
     running = false;
-    //T1.join();
     timer.join();
     controller.join();
 
