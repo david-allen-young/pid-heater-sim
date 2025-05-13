@@ -87,6 +87,9 @@ int main(int argc, char* argv[])
         auto elapsed = std::chrono::steady_clock::now().time_since_epoch();
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
         std::cout << "[" << ms.count() << " ms] Temp: " << global_temp << " | Heat: " << appliedHeat << "\n";
+        int barLength = static_cast<int>(global_temp);
+        barLength = std::min(barLength, 100); // cap for terminal sanity
+        std::cout << std::string(barLength, '=') << ">\n";
     };
 
     auto waitUntilNextCycle = [](std::chrono::steady_clock::time_point now)
