@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
+#include <random>
 
 class PID
 {
@@ -51,10 +52,15 @@ int main(int argc, char* argv[])
     bool running = true;
     std::mutex mtx;
 
+    // Random generator setup
+    std::default_random_engine rng(std::random_device{}());
+    std::uniform_real_distribution<double> noise_dist(-0.05, 0.05);
+
     auto readSensors = [&]()
     {
         std::lock_guard<std::mutex> lock(mtx);
-        return global_temp;
+        double noise = noise_dist(rng);
+        return global_temp + noise;
     };
 
     auto computeControlAction = [&](double actual, double delta_time)
