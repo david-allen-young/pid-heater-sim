@@ -1,3 +1,4 @@
+#include "PID.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -5,28 +6,6 @@
 #include <thread>
 #include <mutex>
 #include <random>
-
-class PID
-{
-public:
-    PID(double p, double i, double d)
-        : kp(p), ki(i), kd(d)
-    {
-    }
-    double compute(double setpoint, double actual, double delta_time)
-    {
-        double error = setpoint - actual;
-        integral += error * delta_time;
-        double derivative = (error - prevError) / delta_time;
-        prevError = error;
-        return kp * error + ki * integral + kd * derivative;
-    }
-
-private:
-    const double kp, ki, kd;
-    double prevError = 0.0;
-    double integral = 0.0;
-};
 
 int main(int argc, char* argv[])
 {
