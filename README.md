@@ -4,15 +4,16 @@ A real-time simulation of a PID-controlled heating system written in C++14.
 
 ## 🎯 What It Does
 
-This project simulates a basic thermal system using:
-- A **PID feedback controller** to regulate temperature toward a setpoint
-- **Real-time logic** with timer-driven execution using threads and condition variables
-- **Simulated sensor noise** to reflect real-world uncertainty
-- A **low-pass filter (LPF)** to smooth noisy sensor input
-- **Variable cooling** based on deviation from ambient temperature
-- A **live ASCII bar graph** to visualize temperature and heat output in real time
+This project simulates a thermal control system using:
+- **Multiple PID controllers**—each managing a separate heating zone
+- **Real-time logic** using timer-driven threads and condition variables
+- **Simulated sensor noise** and low-pass filtering
+- **Passive cooling** based on deviation from ambient temperature
+- **Inter-zone thermal coupling** to mimic heat diffusion
+- **ASCII-based live bar graphs** to show temperature and heat output
+- **Time display in seconds** with fixed precision
 
-Temperature starts at 20°C and rises toward the user-defined setpoint (default: 75°C) with heat applied each cycle according to PID output and offset by passive cooling.
+Each zone begins at 20°C and attempts to reach the user-defined setpoint (default: 75°C). Heating is driven by PID output and offset by cooling and neighbor-zone interaction.
 
 ---
 
@@ -58,18 +59,14 @@ make
 ## 📈 Sample Output
 
 ```
-Temp: =============================================================> 46.05 [492885434 ms]
-Heat: --------------------------------------------------------------------------------> 0.88 [492885434 ms]
+Zone 0 Temp: ==============================> 33.40 [4.7812 sec]
+Zone 0 Heat: ------------------------------> 0.7432 [4.7812 sec]
 
-Temp: =========================================================================> 54.81 [492886163 ms]
-Heat: --------------------------------------------------------------------------------> 0.80 [492886163 ms]
-
-Temp: ===============================================================================> 59.64 [492886609 ms]
-Heat: ----------------------------------------------------------------------------> 0.76 [492886609 ms]
-
-Temp: ================================================================================> 65.54 [492887212 ms]
-Heat: ---------------------------------------------------------------------> 0.70 [492887212 ms]
+Zone 1 Temp: ==============================> 34.01 [4.7812 sec]
+Zone 1 Heat: ------------------------------> 1.0000 [4.7812 sec]
 ```
+
+*Bars are clamped to fit typical terminal widths. Heat is capped at 100%.*
 
 ---
 
@@ -78,19 +75,20 @@ Heat: ---------------------------------------------------------------------> 0.7
 This project is ideal for studying:
 
 - PID control loop design and tuning
-- The effect of noisy inputs and sensor filtering
-- Real-time programming with threads and condition variables
-- Timer-driven simulation architecture
-- Console-based data visualization
+- Multi-zone thermal modeling and coupling
+- Effects of noisy inputs and filtering
+- Real-time programming with threads and timers
+- Console-based simulation visualization
 
 ---
 
 ## 🔄 Future Enhancements (Ideas)
 
-- Overheat protection / safety lockout logic
-- Dual-zone PID control simulation
-- Ramping setpoints and step disturbances
-- CSV logging for analysis in Python or Excel
+- Setpoint ramping and step disturbances
+- CSV logging for offline analysis
+- Support for thermal mass and actuator lag
+- Interactive CLI commands during simulation
+- Real-time plot visualization via Python/matplotlib
 
 ---
 
