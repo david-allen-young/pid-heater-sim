@@ -120,7 +120,8 @@ int main(int argc, char* argv[])
             auto now = std::chrono::steady_clock::now() - start_time;
             std::chrono::duration<double> elapsed = now - prev;
             prev = now;
-            double delta_time = elapsed.count();
+            //double delta_time = elapsed.count();
+            double delta_time = std::max(1e-3, elapsed.count());  // 1 ms minimum
 
             //auto heat = computeControlAction(local_temp, delta_time);
             //sendActuatorCommands(heat);
@@ -152,17 +153,19 @@ int main(int argc, char* argv[])
             //auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
             //auto elapsed_sec = std::chrono::duration_cast<std::chrono::duration<double>>(now.time_since_epoch()).count();
             double elapsed_sec = elapsed.count();
+            const int MAX_BAR_WIDTH = 80;
             for (int i = 0; i < zones.size(); ++i)
             {
                 //int barLen = static_cast<int>((zones[i].local_temp / setpoint) * 100.0);
                 //barLen = std::min(barLen, 80);
-                int barLen = std::min(static_cast<int>((zones[i].local_temp / setpoint) * 100.0), 80);
+                int barLen = std::min(static_cast<int>((zones[i].local_temp / setpoint) * 100.0), MAX_BAR_WIDTH);
                 std::cout << std::fixed << std::setprecision(2);
                 std::cout << "Zone " << i << " Temp: " << std::string(barLen, '=') << "> " << zones[i].local_temp << " [" << std::fixed << std::setprecision(4) << elapsed_sec << " sec]\n";
                 //int heatBar = static_cast<int>(std::clamp(zones[i].applied_heat / 100.0, 0.0, 1.0) * 100);
                 double heat_frac = std::max(0.0, std::min(1.0, zones[i].applied_heat / 100.0));
-                int heatBar = static_cast<int>(heat_frac * 100);
-                std::cout << "Zone " << i << " Heat: " << std::string(heatBar, '-') << "> " << (zones[i].applied_heat / 100.0) << " [" << std::fixed << std::setprecision(4) << elapsed_sec << " sec]\n\n";
+                //int heatBar = static_cast<int>(heat_frac * 100);
+                int heatBar = std::min(static_cast<int>(heat_frac * MAX_BAR_WIDTH), MAX_BAR_WIDTH);
+                std::cout << "Zone " << i << " Heat: " << std::string(heatBar, '-') << "> " << heat_frac << " [" << std::fixed << std::setprecision(4) << elapsed_sec << " sec]\n\n";
             }
         }
      });
