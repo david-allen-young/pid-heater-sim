@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     if (argc > 5) duration_sec = std::stoi(argv[5]);
 
     std::cout << "Starting simulation:" << std::endl
-        << "  Setpoint: " << setpoint << " °C" << std::endl
+        << "  Setpoint: " << setpoint << " Degrees C" << std::endl
         << "  PID: P=" << p << ", I=" << i << ", D=" << d << std::endl
         << "  Duration: " << duration_sec << " sec" << std::endl
         << "  Zones: " << num_zones << std::endl
@@ -91,6 +91,7 @@ int main(int argc, char* argv[])
     std::condition_variable cv;
     std::mutex tick_mtx;
     bool tick_ready = false;
+    auto start_time = std::chrono::steady_clock::now();
 
     std::thread timer([&]()
     {
@@ -106,7 +107,7 @@ int main(int argc, char* argv[])
 
     std::thread controller([&]()
     {
-        auto prev = std::chrono::steady_clock::now();
+        auto prev = std::chrono::steady_clock::now() - start_time;
 
         while (running)
         {
@@ -116,7 +117,7 @@ int main(int argc, char* argv[])
             lock.unlock();
 
             //auto local_temp = readSensors();
-            auto now = std::chrono::steady_clock::now();
+            auto now = std::chrono::steady_clock::now() - start_time;
             std::chrono::duration<double> elapsed = now - prev;
             prev = now;
             double delta_time = elapsed.count();
@@ -148,18 +149,20 @@ int main(int argc, char* argv[])
             }
 
             // Print each zone
-            auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+            //auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+            //auto elapsed_sec = std::chrono::duration_cast<std::chrono::duration<double>>(now.time_since_epoch()).count();
+            double elapsed_sec = elapsed.count();
             for (int i = 0; i < zones.size(); ++i)
             {
                 //int barLen = static_cast<int>((zones[i].local_temp / setpoint) * 100.0);
                 //barLen = std::min(barLen, 80);
                 int barLen = std::min(static_cast<int>((zones[i].local_temp / setpoint) * 100.0), 80);
                 std::cout << std::fixed << std::setprecision(2);
-                std::cout << "Zone " << i << " Temp: " << std::string(barLen, '=') << "> " << zones[i].local_temp << " [" << elapsed_ms << " ms]\n";
+                std::cout << "Zone " << i << " Temp: " << std::string(barLen, '=') << "> " << zones[i].local_temp << " [" << std::fixed << std::setprecision(4) << elapsed_sec << " sec]\n";
                 //int heatBar = static_cast<int>(std::clamp(zones[i].applied_heat / 100.0, 0.0, 1.0) * 100);
                 double heat_frac = std::max(0.0, std::min(1.0, zones[i].applied_heat / 100.0));
                 int heatBar = static_cast<int>(heat_frac * 100);
-                std::cout << "Zone " << i << " Heat: " << std::string(heatBar, '-') << "> " << (zones[i].applied_heat / 100.0) << " [" << elapsed_ms << " ms]\n\n";
+                std::cout << "Zone " << i << " Heat: " << std::string(heatBar, '-') << "> " << (zones[i].applied_heat / 100.0) << " [" << std::fixed << std::setprecision(4) << elapsed_sec << " sec]\n\n";
             }
         }
      });
